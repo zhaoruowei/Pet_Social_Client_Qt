@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/follow_icon.png</file>
+        <file>res/cat_icon.png</file>
+        <file>res/home_icon.png</file>
+        <file>res/like_icon.png</file>
+        <file>res/mine_icon.png</file>
+        <file>res/publish_icon.png</file>
+        <file>res/comment_icon.png</file>
+        <file>res/explore_head_icon.png</file>
+        <file>res/follow_head_icon.png</file>
+        <file>res/friend_icon.png</file>
+        <file>res/resource_icon.png</file>
+        <file>res/submit_icon.png</file>
+        <file>res/delete_icon.png</file>
+        <file>res/edit_icon.png</file>
+        <file>res/person_icon.png</file>
+        <file>res/logout_icon.png</file>
+        <file>res/cancel_icon.png</file>
+        <file>res/reset_icon.png</file>
+        <file>res/logo.png</file>
+        <file>res/splash.png</file>
+        <file>res/follow_click_icon.png</file>
+        <file>res/unfollow_click_icon.png</file>
+        <file>res/unlike_icon.png</file>
+        <file>res/play_icon.png</file>
+        <file>res/photo_select_icon.png</file>
+        <file>res/video_select_icon.png</file>
+    </qresource>
+</RCC>
