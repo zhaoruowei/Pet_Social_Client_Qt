@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Reply</class>
- <widget class="QWidget" name="Reply">
+ <class>PublishRes</class>
+ <widget class="QWidget" name="PublishRes">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,46 +13,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QPushButton" name="headBtn">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>411</width>
-     <height>80</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <italic>true</italic>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border:0px;
-background:#ed6a5a;</string>
-   </property>
-   <property name="text">
-    <string>Reply</string>
-   </property>
-   <property name="icon">
-    <iconset resource="res.qrc">
-     <normaloff>:/res/comment_icon.png</normaloff>:/res/comment_icon.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>60</width>
-     <height>60</height>
-    </size>
-   </property>
-  </widget>
   <widget class="QWidget" name="footnav" native="true">
    <property name="geometry">
     <rect>
@@ -117,13 +77,53 @@ background:#ed6a5a;</string>
     </property>
    </widget>
   </widget>
+  <widget class="QPushButton" name="headBtn">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>411</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border:0px;
+background:#ed6a5a;</string>
+   </property>
+   <property name="text">
+    <string>Publish</string>
+   </property>
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/res/resource_icon.png</normaloff>:/res/resource_icon.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>60</width>
+     <height>60</height>
+    </size>
+   </property>
+  </widget>
   <widget class="QWidget" name="restitlewidget" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>80</y>
      <width>411</width>
-     <height>100</height>
+     <height>80</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -135,7 +135,7 @@ background:#ed6a5a;</string>
    <property name="minimumSize">
     <size>
      <width>411</width>
-     <height>100</height>
+     <height>50</height>
     </size>
    </property>
    <property name="maximumSize">
@@ -181,105 +181,6 @@ background:#9bc1bc;
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QSplitter" name="splitter_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <widget class="QLabel" name="headusernamelabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="text">
-        <string>@username</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="headtimelabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="text">
-        <string>release time: 2022-12-21 24:24:24</string>
-       </property>
-      </widget>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QSplitter" name="splitter">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <widget class="QLabel" name="headviewedlabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="text">
-        <string>10 viewed</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="headreplylabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="text">
-        <string>10 reply</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="headlikelabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="text">
-        <string>10 like</string>
-       </property>
-      </widget>
-     </widget>
-    </item>
     <item row="1" column="0" colspan="2">
      <widget class="QLineEdit" name="headtitleedit">
       <property name="font">
@@ -296,58 +197,6 @@ background-color: rgb(230, 235, 224);</string>
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QWidget" name="widget" native="true">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>180</y>
-     <width>411</width>
-     <height>348</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(230, 235, 224);</string>
-   </property>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>91</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Content:</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="textEdit">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>391</width>
-      <height>290</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border: 2px solid;
-border-radius: 5px groove gray;
-background-color: rgb(230, 235, 224);</string>
-    </property>
-   </widget>
   </widget>
   <widget class="QWidget" name="btnwidget" native="true">
    <property name="geometry">
@@ -380,7 +229,7 @@ background-color: rgb(230, 235, 224);</string>
     <string notr="true">background-color: rgb(155, 193, 188);
 border: 0px;</string>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,40">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,40,40">
     <property name="spacing">
      <number>2</number>
     </property>
@@ -390,6 +239,54 @@ border: 0px;</string>
     <property name="bottomMargin">
      <number>0</number>
     </property>
+    <item>
+     <widget class="QToolButton" name="selectBtn">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>70</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-radius: 5px;
+background-color: rgb(155, 193, 188);
+border: 1px solid;</string>
+      </property>
+      <property name="text">
+       <string>Select File</string>
+      </property>
+      <property name="icon">
+       <iconset resource="res.qrc">
+        <normaloff>:/res/photo_select_icon.png</normaloff>:/res/photo_select_icon.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+      <property name="popupMode">
+       <enum>QToolButton::InstantPopup</enum>
+      </property>
+      <property name="toolButtonStyle">
+       <enum>Qt::ToolButtonTextUnderIcon</enum>
+      </property>
+     </widget>
+    </item>
     <item>
      <spacer name="horizontalSpacer">
       <property name="orientation">
@@ -402,6 +299,48 @@ border: 0px;</string>
        </size>
       </property>
      </spacer>
+    </item>
+    <item>
+     <widget class="QToolButton" name="submitBtn">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>50</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-radius: 5px;
+background-color: rgb(155, 193, 188);
+border: 1px solid;</string>
+      </property>
+      <property name="text">
+       <string>Submit</string>
+      </property>
+      <property name="icon">
+       <iconset resource="res.qrc">
+        <normaloff>:/res/submit_icon.png</normaloff>:/res/submit_icon.png</iconset>
+      </property>
+      <property name="toolButtonStyle">
+       <enum>Qt::ToolButtonTextUnderIcon</enum>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QToolButton" name="clearBtn">
@@ -449,6 +388,58 @@ border: 1px solid;</string>
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>160</y>
+     <width>411</width>
+     <height>368</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(230, 235, 224);</string>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Content:</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>391</width>
+      <height>311</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 2px solid;
+border-radius: 5px groove gray;
+background-color: rgb(230, 235, 224);</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources>

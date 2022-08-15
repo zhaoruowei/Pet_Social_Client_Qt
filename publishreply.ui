@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Reply</class>
- <widget class="QWidget" name="Reply">
+ <class>PublishReply</class>
+ <widget class="QWidget" name="PublishReply">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -380,7 +380,7 @@ background-color: rgb(230, 235, 224);</string>
     <string notr="true">background-color: rgb(155, 193, 188);
 border: 0px;</string>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,40">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,40,40">
     <property name="spacing">
      <number>2</number>
     </property>
@@ -402,6 +402,48 @@ border: 0px;</string>
        </size>
       </property>
      </spacer>
+    </item>
+    <item>
+     <widget class="QToolButton" name="submitBtn">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>50</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-radius: 5px;
+background-color: rgb(155, 193, 188);
+border: 1px solid;</string>
+      </property>
+      <property name="text">
+       <string>Submit</string>
+      </property>
+      <property name="icon">
+       <iconset resource="res.qrc">
+        <normaloff>:/res/submit_icon.png</normaloff>:/res/submit_icon.png</iconset>
+      </property>
+      <property name="toolButtonStyle">
+       <enum>Qt::ToolButtonTextUnderIcon</enum>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QToolButton" name="clearBtn">
