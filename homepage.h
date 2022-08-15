@@ -8,6 +8,7 @@
 #include <QScrollBar>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QTimer>
 #include "userlogin.h"
 #include "httpclass.h"
 #include "userdb.h"
@@ -15,6 +16,7 @@
 #include "resetpwd.h"
 #include "petinfo.h"
 #include "userresource.h"
+#include "publish.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class HomePage; }
@@ -39,16 +41,26 @@ public:
     void initHeadNavBtn();
     // foot btn check
     void headbtnCheck();
+
     // init content scrollarea
-    void initContentSctollarea(QString url, int headtype);
+    void initContentSctollarea();
+    // load homepage recommend content
+    void loadrecommendcontent();
+    // load homepage like content
+    void loadlikecontent();
+    // add homepage res btn
+    void addresourcebtn();
+
     // init follow page
     void initFollowPage();
     // init follow page scrollarea
     void initFollowSctollarea();
+
     // init pet page
     void initPetPage();
     // init pet page scrollarea
     void initPetSctollarea();
+
     // init profile page
     void initProfilePage();
     // init profile content
@@ -120,5 +132,19 @@ private:
     UserDB *userdb;
     // maintain resource request page number
     int m_resourcepage = 1;
+    // maintain resource data
+    QList<QMap<QString, QString>> resData;
+    // maintain pagebottom
+    QString detail;
+    // maintain homepage type
+    QString m_type;
+    // maintain publish page
+    Publish *publishPage;
+    // maintain publish page flag
+    int publishBtn_flag = 1;
+    // maintain resource page
+    Resource *resourcePage;
+    // maintain filepath
+    QString m_filepath;
 };
 #endif // HOMEPAGE_H

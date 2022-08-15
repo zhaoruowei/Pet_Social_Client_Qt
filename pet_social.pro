@@ -14,6 +14,9 @@ SOURCES += \
     main.cpp \
     homepage.cpp \
     petinfo.cpp \
+    publish.cpp \
+    publishreply.cpp \
+    publishres.cpp \
     reply.cpp \
     resetpwd.cpp \
     resource.cpp \
@@ -27,6 +30,9 @@ HEADERS += \
     homepage.h \
     httpclass.h \
     petinfo.h \
+    publish.h \
+    publishreply.h \
+    publishres.h \
     reply.h \
     resetpwd.h \
     resource.h \
@@ -38,10 +44,12 @@ HEADERS += \
 FORMS += \
     homepage.ui \
     petinfo.ui \
+    publish.ui \
+    publishreply.ui \
+    publishres.ui \
     reply.ui \
     resetpwd.ui \
     resource.ui \
-    resource_copy.ui \
     userlogin.ui \
     userresource.ui \
     usersignup.ui
@@ -59,12 +67,11 @@ DISTFILES += \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew \
     android/gradlew.bat \
-    android/res/values/libs.xml
+    android/res/values/libs.xml \
+    android/src/com/amin/QtAndroidGallery/QtAndroidGallery.java
 
 RESOURCES += \
     res.qrc
-
-android: include(D:\Andriod\openssl\android_openssl-master\openssl.pri)
 
 android{
     data.files += database/pet_social.db
@@ -76,3 +83,4 @@ contains(ANDROID_TARGET_ARCH,x86) {
     ANDROID_PACKAGE_SOURCE_DIR = \
         $$PWD/android
 }
+android: include(D:/Andriod/openssl/android_openssl-master/openssl.pri)

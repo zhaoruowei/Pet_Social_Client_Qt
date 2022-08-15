@@ -140,8 +140,14 @@ void Resource::loadresdata()
 
 void Resource::replyBtn_clicked()
 {
-    qDebug() << "reply";
     // new reply
+    PublishReply *publishreplypage = new PublishReply(this->httpclass, this->m_id, this->resData);
+    publishreplypage->show();
+    this->hide();
+    connect(publishreplypage, &PublishReply::redirectHomePage, this, [=](){
+        this->show();
+        delete publishreplypage;
+    }, Qt::AutoConnection);
 }
 
 

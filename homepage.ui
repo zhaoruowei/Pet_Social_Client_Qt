@@ -412,7 +412,6 @@
      </widget>
     </widget>
    </widget>
-   <widget class="QWidget" name="publishpage"/>
    <widget class="QWidget" name="petpage">
     <property name="sizePolicy">
      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">

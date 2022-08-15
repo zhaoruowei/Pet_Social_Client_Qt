@@ -10,6 +10,7 @@
 #include <QLabel>
 #include "httpclass.h"
 #include "resource.h"
+#include "reply.h"
 
 namespace Ui {
 class UserResource;
@@ -53,6 +54,8 @@ private:
     bool flag = 1;
     // maintain resource page
     Resource *resource;
+    // maintain reply page
+    Reply *reply;
 };
 
 #endif // USERRESOURCE_H

@@ -11,6 +11,7 @@
 #include <QJsonArray>
 #include <QFile>
 #include "httpclass.h"
+#include "publishreply.h"
 
 namespace Ui {
 class Resource;

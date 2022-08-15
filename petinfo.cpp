@@ -170,11 +170,33 @@ void PetInfo::createPet()
 
 void PetInfo::avatarlabel_clicked()
 {
-    qDebug() << "click";
-    // windows choose file
-//    QString filePath = QFileDialog::getExistingDirectory(this, "请选择文件保存路径…", "./");
-    // android choose file
-    FileSelect *select = new FileSelect;
-    select->selectFile();
+#ifdef Q_OS_WIN
+    this->m_filepath = QFileDialog::getOpenFileName(this, "Choose a File.");
+#endif
+#ifdef Q_OS_ANDROID
+    FileSelect file_obj;
+    this->m_filepath = file_obj.selectFile();
+//        this->m_filepath = QFileDialog::getOpenFileName(this, "Choose a File.");
+#endif
+
+    if (this->m_filepath != "")
+    {
+        QFile uploadfile(this->m_filepath);
+        uploadfile.open(QIODevice::ReadOnly);
+        int file_length = uploadfile.size();
+        QDataStream in(&uploadfile);
+        char* m_buf = new char[file_length];
+        in.readRawData(m_buf, file_length);
+
+        uploadfile.close();
+        QByteArray arr = QByteArray(m_buf, file_length);
+        QString file_name = this->m_filepath.split("/").back();
+        // upload/11/pet/2/test.png/
+        QString strurl = "upload/" + QString::number(this->httpclass->m_uid) + "/pet/" + QString::number(this->m_pid) + "/" + file_name + "/";
+        this->httpclass->uploadavatarrequest(arr, this->m_filepath, strurl);
+        QPixmap pixmap;
+        pixmap.loadFromData(arr);
+        ui->avatarlabel->setIcon(pixmap);
+    }
 }
 

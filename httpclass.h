@@ -33,7 +33,9 @@ public:
     void deletequest(int hasheader=0, QString u="");
     // parse response
     QJsonObject parseResponse(QString strResponse);
-
+    // upload file
+    QString uploadfilerequest(QByteArray bytefile, QString filename, QString u="");
+    QString uploadavatarrequest(QByteArray bytefile, QString filename, QString u);
     // get photo
     QPixmap downloadphoto(QString url);
 
@@ -46,13 +48,11 @@ public:
     QNetworkAccessManager *httpManager;
     // maintain request json data
     QJsonObject *m_requestData;
-    // maintain requset http header
-
     // maintain response json data
     QJsonObject *m_responseData;
     // maintain request url
 //    const QString m_rootUrl = "http://pet-social-git-project-pet-test.apps.kube.eecs.qmul.ac.uk/api/v1/";
-    const QString m_rootUrl = "https://pet-social-openshift-v2-project-pet-test.apps.kube.eecs.qmul.ac.uk/api/v1/";
+    const QString m_rootUrl = "https://www.petsocial.https.apps.kube.eecs.qmul.ac.uk/api/v1/";
 
 };
 

@@ -47,6 +47,8 @@ private:
     int m_pid;
     // maintain pet info
     QMap<QString, QString> m_petinfo;
+    // maintain file path
+    QString m_filepath;
 };
 
 #endif // PETINFO_H

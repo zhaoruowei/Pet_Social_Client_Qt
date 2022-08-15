@@ -278,3 +278,71 @@ QPixmap HttpClass::downloadphoto(QString url)
     pixmap.loadFromData(responseData);
     return pixmap;
 }
+
+QString HttpClass::uploadfilerequest(QByteArray bytefile, QString filename, QString u)
+{
+    // create request object
+    QNetworkRequest request;
+
+    QSslConfiguration sslConf = request.sslConfiguration();
+    sslConf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    sslConf.setProtocol(QSsl::TlsV1_3);
+    request.setSslConfiguration(sslConf);
+
+    // set url
+    QString url = this->m_rootUrl + u;
+    request.setUrl(QUrl(url));
+
+    QByteArray bUid;
+    bUid.setNum(this->m_uid);
+    request.setRawHeader("uid", bUid);
+    request.setRawHeader("Authorization", this->m_token.toUtf8());
+    request.setRawHeader("Content-Type", "*/*");
+    request.setRawHeader("filename", filename.toUtf8());
+
+    // send request
+    QNetworkReply *reply = httpManager->post(request, bytefile);
+    // connect reply finish signal
+    QEventLoop eventLoop;
+    connect(httpManager, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
+    eventLoop.exec();
+    // get response
+    QByteArray responseData;
+    responseData = reply->readAll();
+    QString strResponse = QString::fromUtf8(responseData);
+    return strResponse;
+}
+
+QString HttpClass::uploadavatarrequest(QByteArray bytefile, QString filename, QString u)
+{
+    // create request object
+    QNetworkRequest request;
+
+    QSslConfiguration sslConf = request.sslConfiguration();
+    sslConf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    sslConf.setProtocol(QSsl::TlsV1_3);
+    request.setSslConfiguration(sslConf);
+
+    // set url
+    QString url = this->m_rootUrl + u;
+    request.setUrl(QUrl(url));
+
+    QByteArray bUid;
+    bUid.setNum(this->m_uid);
+    request.setRawHeader("uid", bUid);
+    request.setRawHeader("Authorization", this->m_token.toUtf8());
+    request.setRawHeader("Content-Type", "*/*");
+    request.setRawHeader("filename", filename.toUtf8());
+
+    // send request
+    QNetworkReply *reply = httpManager->put(request, bytefile);
+    // connect reply finish signal
+    QEventLoop eventLoop;
+    connect(httpManager, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
+    eventLoop.exec();
+    // get response
+    QByteArray responseData;
+    responseData = reply->readAll();
+    QString strResponse = QString::fromUtf8(responseData);
+    return strResponse;
+}

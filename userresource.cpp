@@ -226,7 +226,16 @@ void UserResource::addbtn()
                 {
                     int cid = btn->objectName().split("/")[0].toInt();
                     int rid = btn->objectName().split("/")[1].toInt();
-                    qDebug() << cid << "," << rid;
+                    this->reply = new Reply(this->httpclass, rid, cid);
+                    this->reply->show();
+                    this->cleancontent();
+                    this->hide();
+
+                    connect(this->reply, &Reply::redirectHomePage, this, [=](){
+                        delete this->reply;
+                        this->reply = nullptr;
+                        emit redirectHomePage();
+                    }, Qt::AutoConnection);
                 }
 
             }, Qt::AutoConnection);

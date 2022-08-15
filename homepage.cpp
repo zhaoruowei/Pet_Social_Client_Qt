@@ -25,6 +25,8 @@ HomePage::HomePage(QSize screensize, HttpClass *httpclass, UserDB *userdb, QWidg
     this->resetpwdPage = new ResetPwd(this->httpclass);
     // init user res, comment page
     this->userresPage = new UserResource(this->httpclass);
+    // init publish page
+    this->publishPage = new Publish(this->httpclass, this);
 
     // check login status
     if (!this->httpclass->isLogin(this->httpclass->m_uid, this->httpclass->m_token))
@@ -110,7 +112,8 @@ void HomePage::initHomePage()
     this->initHeadNavBtn();
 
     // init scrollarea(request to url: resource/)
-    this->initContentSctollarea("resource/", 0);
+    this->m_type = "explore";
+    this->initContentSctollarea();
 
 }
 
@@ -221,25 +224,89 @@ void HomePage::initHeadNavBtn()
     headbtnCheck();
 }
 
-void HomePage::initContentSctollarea(QString url, int headtype)
+void HomePage::initContentSctollarea()
 {
     if (this->m_resourcepage == -1)
     {
         return;
     }
     this->m_resourcepage = 1;
-    // get request to http://127.0.0.1:8000/api/v1/resource/
-    QString res = this->httpclass->getrequest(nullptr, headtype, url + "?page=1");
+
+    if (this->m_type == "explore")
+    {
+        this->loadrecommendcontent();
+    }
+    else
+    {
+        this->loadlikecontent();
+    }
+
+
+    // bind grabgesture
+    QScroller::grabGesture(ui->contentScrollArea->viewport(), QScroller::LeftMouseButtonGesture);
+
+    // set layout
+    QVBoxLayout *vlayout = new QVBoxLayout(ui->contentScrollAreaContent);
+    vlayout->setDirection(QBoxLayout::TopToBottom);
+    vlayout->setSpacing(0);
+    vlayout->setContentsMargins(0, 0, 0, 0);
+    // bind widget
+    ui->contentScrollAreaContent->setLayout(vlayout);
+
+    this->addresourcebtn();
+
+    // new page content
+    connect(ui->contentScrollArea->verticalScrollBar(), &QScrollBar::valueChanged, this, [=](int val){
+        if (ui->contentScrollArea->verticalScrollBar()->minimum() == val)
+        {
+            this->cleanbtn();
+            this->m_resourcepage = 1;
+            if (this->m_type == "explore")
+            {
+                this->loadrecommendcontent();
+            }
+            else
+            {
+                this->loadlikecontent();
+            }
+            this->addresourcebtn();
+        }
+        else if (ui->contentScrollArea->verticalScrollBar()->maximum() == val)
+        {
+            if (this->m_resourcepage == -1)
+            {
+                return;
+            }
+            this->m_resourcepage++;
+            if (this->m_type == "explore")
+            {
+                this->loadrecommendcontent();
+            }
+            else
+            {
+                this->loadlikecontent();
+            }
+            this->addresourcebtn();
+        }
+    }, Qt::AutoConnection);
+}
+
+void HomePage::loadrecommendcontent()
+{
+    this->resData.clear();
+    // to resource/?page=1
+    QString strurl = "resource/?page=" + QString::number(this->m_resourcepage);
+    QString res = this->httpclass->getrequest(nullptr, 0, strurl);
 
     // pares response
     QJsonObject objRes = this->httpclass->parseResponse(res);
-    QString detail = "";
-    QList<QMap<QString, QString>> datamap;
+    this->detail = "";
+
     if (!objRes.empty())
     {
         if (!objRes.value("detail").isUndefined())
         {
-            detail = objRes.take("detail").toString();
+            this->detail = objRes.take("detail").toString();
         }
 
         int code = objRes.take("code").toInt();
@@ -250,23 +317,59 @@ void HomePage::initContentSctollarea(QString url, int headtype)
             {
                 QMap<QString, QString> tempmap;
                 tempmap["title"] = datalist[i].toObject().take("title").toString();
-                datamap << tempmap;
+                tempmap["id"] = QString::number(datalist[i].toObject().take("resource_id").toInt());
+                this->resData << tempmap;
             }
         }
     }
+}
+// load homepage like content
+void HomePage::loadlikecontent()
+{
+    // to user/<int:pk>/like/?page=1
+    QString strurl = "user/" +  QString::number(this->httpclass->m_uid) + "/like/?page=" + QString::number(this->m_resourcepage);
+    QString res = this->httpclass->getrequest(nullptr, 1, strurl);
 
+    // pares response
+    QJsonObject objRes = this->httpclass->parseResponse(res);
+    this->detail = "";
 
-    // bind grabgesture
-//        QScroller::grabGesture(ui->contentScrollArea, QScroller::LeftMouseButtonGesture);
-    QScroller::grabGesture(ui->contentScrollArea->viewport(), QScroller::LeftMouseButtonGesture);
+    if (!objRes.empty())
+    {
+        if (!objRes.value("detail").isUndefined())
+        {
+            this->detail = objRes.take("detail").toString();
+        }
+
+        int code = objRes.take("code").toInt();
+        if (code == 200)
+        {
+            QJsonArray datalist = objRes.value("data").toArray();
+            for (int i = 0; i < datalist.size(); ++i)
+            {
+                QMap<QString, QString> tempmap;
+                tempmap["title"] = datalist[i].toObject().take("title").toString();
+                tempmap["id"] = QString::number(datalist[i].toObject().take("resource_id").toInt());
+                this->resData << tempmap;
+            }
+        }
+    }
+}
+
+void HomePage::addresourcebtn()
+{
+    QVBoxLayout *vlayout = ui->contentScrollAreaContent->findChild<QVBoxLayout*>();
+    if (vlayout == nullptr)
+    {
+        vlayout = new QVBoxLayout(ui->contentScrollAreaContent);
+    }
     // set layout
-    QVBoxLayout *vlayout = new QVBoxLayout(ui->contentScrollAreaContent);
     vlayout->setDirection(QBoxLayout::TopToBottom);
     vlayout->setSpacing(0);
     vlayout->setContentsMargins(0, 0, 0, 0);
 
     // insert widget
-    if (detail != "")
+    if (this->detail != "")
     {
         this->m_resourcepage = -1;
         QLabel *label = new QLabel(this);
@@ -276,12 +379,13 @@ void HomePage::initContentSctollarea(QString url, int headtype)
     }
     else
     {
-        for (int i = 0; i < datamap.size(); ++i)
+        for (int i = 0; i < this->resData.size(); ++i)
         {
             QPushButton *btn = new QPushButton;
             btn->setParent(this);
             btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-            btn->setText(datamap[i]["title"]);
+            btn->setText(this->resData[i]["title"]);
+            btn->setObjectName(this->resData[i]["id"]);
             QPixmap pixmap;
             pixmap.load(":/res/resource_icon.png");
             btn->setFixedSize(411, 150);
@@ -292,146 +396,21 @@ void HomePage::initContentSctollarea(QString url, int headtype)
             vlayout->addWidget(btn);
 
             connect(btn, &QPushButton::clicked, this, [=](){
-                //            QMessageBox::information(this, "Error", "clicked"+ QString::number(i));
-                qDebug() << ui->contentScrollArea->verticalScrollBar()->value();
-                // redirect to content page
-
+                int rid = btn->objectName().remove("/").toInt();
+                this->resourcePage = new Resource(this->httpclass, rid, 1);
+                this->resourcePage->show();
+                this->hide();
+                connect(this->resourcePage, &Resource::redirectHomePage, this, [=](){
+                    delete this->resourcePage;
+                    this->resourcePage = nullptr;
+                    this->show();
+                }, Qt::AutoConnection);
             }, Qt::AutoConnection);
         }
     }
-
-
-    // bind widget
-    ui->contentScrollAreaContent->setLayout(vlayout);
-
-    // connect content scrollarea scrollbar to bottom
-    connect(ui->contentScrollArea->verticalScrollBar(), &QScrollBar::valueChanged, this, [=](int val){
-        if (ui->contentScrollArea->verticalScrollBar()->maximum() == val)
-        {
-            if (this->m_resourcepage == -1)
-            {
-                return;
-            }
-            this->m_resourcepage++;
-            // get request to http://127.0.0.1:8000/api/v1/resource/
-            QString res = this->httpclass->getrequest(nullptr, headtype, QString(url + "?page="+QString::number(this->m_resourcepage)));
-            // pares response
-            QJsonObject objRes = this->httpclass->parseResponse(res);
-            QString detail = "";
-            QList<QMap<QString, QString>> datamap;
-            if (!objRes.empty())
-            {
-                if (!objRes.value("detail").isUndefined())
-                {
-                    detail = objRes.take("detail").toString();
-                }
-
-                int code = objRes.take("code").toInt();
-                if (code == 200)
-                {
-                    QJsonArray datalist = objRes.value("data").toArray();
-                    for (int i = 0; i < datalist.size(); ++i)
-                    {
-                        QMap<QString, QString> tempmap;
-                        tempmap["title"] = datalist[i].toObject().take("title").toString();
-                        datamap << tempmap;
-                    }
-                }
-            }
-            // insert widget
-            if (detail != "")
-            {
-                this->m_resourcepage = -1;
-                QLabel *label = new QLabel(this);
-                label->setText("No More Content.");
-                label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-                vlayout->addWidget(label);
-            }
-            else
-            {
-                for (int i = 0; i < datamap.size(); ++i)
-                {
-                    QPushButton *btn = new QPushButton;
-                    btn->setParent(this);
-                    btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-                    btn->setText(datamap[i]["title"]);
-                    QPixmap pixmap;
-                    pixmap.load(":/res/resource_icon.png");
-                    btn->setFixedSize(411, 150);
-                    btn->setStyleSheet("QPushButton{border:1px solid #9bc1bc;background:#e6ebe0;}");
-                    btn->setIcon(pixmap);
-                    btn->setIconSize(QSize(60, 60));
-                    btn->setFont(QFont("Microsoft YaHei UI", 13));
-                    vlayout->addWidget(btn);
-
-                    connect(btn, &QPushButton::clicked, this, [=](){
-                        //            QMessageBox::information(this, "Error", "clicked"+ QString::number(i));
-                        qDebug() << ui->contentScrollArea->verticalScrollBar()->value();
-                        // redirect to content page
-
-                    }, Qt::AutoConnection);
-                }
-            }
-        }
-    }, Qt::AutoConnection);
-
-    // connect content scrollarea scrollbar to top
-    connect(ui->contentScrollArea->verticalScrollBar(), &QScrollBar::valueChanged, this, [=](int val){
-        if (ui->contentScrollArea->verticalScrollBar()->minimum() == val)
-        {
-            this->cleanbtn();
-            this->m_resourcepage = 1;
-            // get request to http://127.0.0.1:8000/api/v1/resource/
-            QString res = this->httpclass->getrequest(nullptr, headtype, QString(url + "?page="+QString::number(this->m_resourcepage)));
-            // pares response
-            QJsonObject objRes = this->httpclass->parseResponse(res);
-            QString detail = "";
-            QList<QMap<QString, QString>> datamap;
-            if (!objRes.empty())
-            {
-                if (!objRes.value("detail").isUndefined())
-                {
-                    detail = objRes.take("detail").toString();
-                }
-
-                int code = objRes.take("code").toInt();
-                if (code == 200)
-                {
-                    QJsonArray datalist = objRes.value("data").toArray();
-                    for (int i = 0; i < datalist.size(); ++i)
-                    {
-                        QMap<QString, QString> tempmap;
-                        tempmap["title"] = datalist[i].toObject().take("title").toString();
-                        datamap << tempmap;
-                    }
-                }
-            }
-            // insert widget
-            for (int i = 0; i < datamap.size(); ++i)
-            {
-                QPushButton *btn = new QPushButton;
-                btn->setParent(this);
-                btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-                btn->setText(datamap[i].first());
-                QPixmap pixmap;
-                pixmap.load(":/res/resource_icon.png");
-                btn->setFixedSize(411, 150);
-                btn->setStyleSheet("QPushButton{border:1px solid #9bc1bc;background:#e6ebe0;}");
-                btn->setIcon(pixmap);
-                btn->setIconSize(QSize(60, 60));
-                btn->setFont(QFont("Microsoft YaHei UI", 13));
-                vlayout->addWidget(btn);
-
-                connect(btn, &QPushButton::clicked, this, [=](){
-                    //            QMessageBox::information(this, "Error", "clicked"+ QString::number(i));
-                    qDebug() << ui->contentScrollArea->verticalScrollBar()->value();
-                    // redirect to content page
-
-                }, Qt::AutoConnection);
-            }
-        }
-    }, Qt::AutoConnection);
 }
+
+
 
 void HomePage::initFollowSctollarea()
 {
@@ -699,6 +678,10 @@ void HomePage::initProfileContent()
         QString strurl = this->httpclass->m_rootUrl + avatarurl.remove(0, 1);
         strurl.remove("/api/v1");
         QPixmap pixmap = this->httpclass->downloadphoto(strurl);
+        if (!pixmap)
+        {
+            pixmap.load(":/res/person_icon.png");
+        }
         pixmap = pixmap.scaled(ui->avatarBtn->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QBitmap mask(pixmap.size());
         QPainter painter(&mask);
@@ -763,20 +746,32 @@ void HomePage::followBtn_clicked()
 
 void HomePage::publishBtn_clicked()
 {
-    //    qDebug() << "clicked";
-    for (int i = 0; i < this->footbtns.size(); ++i)
-    {
-        if (i != 2)
+//    qDebug() << "clicked";
+    ui->publishBtn->setStyleSheet("QPushButton{background:#b84b3e;}");
+    QTimer::singleShot(100, this, [=](){
+        ui->publishBtn->setStyleSheet("QPushButton{border:0px;background:#ed6a5a;}");
+    });
+    QTimer::singleShot(150, this, [=](){
+        if (publishBtn_flag)
         {
-            this->footbtns.at(i)->setChecked(false);
+//            qDebug() << "show";
+            this->publishBtn_flag = 0;
+            this->publishPage->publishPage_Show();
         }
         else
         {
-            this->footbtns.at(i)->setChecked(true);
+//            qDebug() << "hide";
+            this->publishBtn_flag = 1;
+            this->publishPage->publishPage_Hide();
         }
-    }
-    footbtnCheck();
-    ui->stackedWidget->setCurrentIndex(2);
+    });
+    connect(this->publishPage, &Publish::publishBtnclicked, this, [=](){
+        this->publishBtn_flag = 1;
+        this->hide();
+    }, Qt::AutoConnection);
+    connect(this->publishPage, &Publish::publishBtnclose, this, [=](){
+        this->show();
+    }, Qt::AutoConnection);
 }
 
 
@@ -811,7 +806,7 @@ void HomePage::petBtn_clicked()
 
     initPetSctollarea();
     footbtnCheck();
-    ui->stackedWidget->setCurrentIndex(3);
+    ui->stackedWidget->setCurrentIndex(2);
 }
 
 
@@ -831,7 +826,7 @@ void HomePage::mineBtn_clicked()
     }
     footbtnCheck();
     this->initProfileContent();
-    ui->stackedWidget->setCurrentIndex(4);
+    ui->stackedWidget->setCurrentIndex(3);
 }
 
 void HomePage::recommendBtn_clicked()
@@ -849,9 +844,10 @@ void HomePage::recommendBtn_clicked()
     }
     headbtnCheck();
     cleanbtn();
-    QVBoxLayout* layout = ui->contentScrollArea->findChild<QVBoxLayout*>();
-    delete layout;
-    this->initContentSctollarea("resource/", 0);
+    this->resData.clear();
+    this->m_resourcepage = 1;
+    this->m_type = "explore";
+    this->initContentSctollarea();
 }
 
 
@@ -871,9 +867,10 @@ void HomePage::followheadBtn_clicked()
     headbtnCheck();
     // /api/v1/user/<int:pk>/like/
     cleanbtn();
-    QVBoxLayout* layout = ui->contentScrollArea->findChild<QVBoxLayout*>();
-    delete layout;
-    this->initContentSctollarea("user/"+QString::number(this->httpclass->m_uid)+"/like/", 1);
+    this->resData.clear();
+    this->m_resourcepage = 1;
+    this->m_type = "like";
+    this->initContentSctollarea();
 }
 
 void HomePage::footbtnCheck()
@@ -911,20 +908,15 @@ void HomePage::headbtnCheck()
 
 void HomePage::cleanbtn()
 {
-    QList<QPushButton*> btns = this->findChildren<QPushButton*>();
-    for (auto btn:btns)
+    QList scrollcontents = ui->contentScrollAreaContent->children();
+    if (!scrollcontents.isEmpty())
     {
-        if (btn->objectName() == "")
+        for (auto widget:scrollcontents)
         {
-            delete btn;
-        }
-    }
-    QList<QLabel*> labels = this->findChildren<QLabel*>();
-    for (auto label:labels)
-    {
-        if (label->objectName() == "")
-        {
-            delete label;
+            if (widget != nullptr)
+            {
+                delete widget;
+            }
         }
     }
 }
@@ -1005,6 +997,34 @@ void HomePage::footlogoutBtn_clicked()
 void HomePage::avatarBtn_clicked()
 {
     // photo upload
+#ifdef Q_OS_WIN
+    this->m_filepath = QFileDialog::getOpenFileName(this, "Choose a File.");
+#endif
+#ifdef Q_OS_ANDROID
+    FileSelect file_obj;
+    this->m_filepath = file_obj.selectFile();
+//        this->m_filepath = QFileDialog::getOpenFileName(this, "Choose a File.");
+#endif
+
+    if (this->m_filepath != "")
+    {
+        QFile uploadfile(this->m_filepath);
+        uploadfile.open(QIODevice::ReadOnly);
+        int file_length = uploadfile.size();
+        QDataStream in(&uploadfile);
+        char* m_buf = new char[file_length];
+        in.readRawData(m_buf, file_length);
+
+        uploadfile.close();
+        QByteArray arr = QByteArray(m_buf, file_length);
+        QString file_name = this->m_filepath.split("/").back();
+        // upload/11/test.png/
+        QString strurl = "upload/" + QString::number(this->httpclass->m_uid) + "/" + file_name + "/";
+        this->httpclass->uploadavatarrequest(arr, this->m_filepath, strurl);
+        QPixmap pixmap;
+        pixmap.loadFromData(arr);
+        ui->avatarBtn->setIcon(pixmap);
+    }
 }
 
 
